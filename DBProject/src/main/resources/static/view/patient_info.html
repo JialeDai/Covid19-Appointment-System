@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="../js/patient-info.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .header {
+            overflow: hidden;
+            background-color: #f1f1f1;
+            padding: 20px 10px;
+        }
+
+        .header a {
+            float: left;
+            color: black;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            font-size: 18px;
+            line-height: 25px;
+            border-radius: 4px;
+        }
+
+        .header a.logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .header a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .header a.active {
+            background-color: rebeccapurple;
+            color: white;
+        }
+
+        .header-right {
+            float: right;
+        }
+
+        #btn-update {
+            background-color: rebeccapurple;
+        }
+
+        .btn-action {
+            /*background-color: rebeccapurple;*/
+        }
+
+        #btn-upload {
+            background-color: rebeccapurple;
+        }
+
+        #btn-confirm-schedule {
+            background-color: rebeccapurple;
+        }
+
+        #btn-cancel-schedule {
+            background-color: rebeccapurple;
+        }
+
+        @media screen and (max-width: 500px) {
+            .header a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+
+            .header-right {
+                float: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <a href="#default" class="logo">Patient: </a>
+    <div class="header-right">
+        <a id="profile">Profile</a>
+        <a id="scheduler">Scheduler</a>
+        <a id="appointment">Appointment</a>
+        <a class="active" id="log-out">Log Out</a>
+    </div>
+</div>
+
+<div style="padding-left:200px; padding-right: 200px; padding-top: 20px;" id="main-container">
+    <div class="profile">
+        <div class="mb-3">
+            <form enctype="multipart/form-data" method="post" id="upload-form" role="form">
+                <label for="InputAdditionalInfo" class="form-label">Additional Information</label>
+                <input type="file" class="form-control" id="InputAdditionalInfo" name="file">
+                <button type="submit" class="btn btn-primary" id="btn-upload">Upload</button>
+                <div id="additional_info_file_download">
+                    <!--                    <a href="../upload/additional_info/NYU_SR_TUNF.pdf" download="test.pdf">test</a>-->
+                </div>
+            </form>
+        </div>
+        <form>
+            <div class="mb-3">
+                <label for="InputName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="InputName" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="InputEmail" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="InputSSN" class="form-label">SSN</label>
+                <input type="text" class="form-control" id="InputSSN" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="InputBirth" class="form-label">Birth</label>
+                <input type="date" class="form-control" id="InputBirth">
+            </div>
+            <div class="mb-3">
+                <label for="InputAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="InputAddress">
+            </div>
+            <div class="mb-3">
+                <label for="InputPhone" class="form-label">Phone</label>
+                <input type="tel" class="form-control" id="InputPhone">
+            </div>
+            <div class="mb-3">
+                <label for="InputMaxDistance" class="form-label">Max Distance (-1 for patient not set distance
+                    preference)</label>
+                <input type="number" class="form-control" id="InputMaxDistance">
+            </div>
+            <div class="mb-3">
+                <label for="InputPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="InputPassword">
+            </div>
+            <div class="mb-3">
+                <label for="DisplayPriority" class="form-label">Priority</label>
+                <input type="text" class="form-control" id="DisplayPriority"
+                       placeholder="Haven't been assigned a priority" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="DisplayStatus" class="form-label">Status</label>
+                <input type="text" class="form-control" id="DisplayStatus" placeholder="waiting" disabled>
+            </div>
+            <button type="submit" class="btn btn-primary" id="btn-update">Update</button>
+        </form>
+    </div>
+
+    <div style="padding-left:200px; padding-right: 200px; padding-top: 100px;" class="scheduler">
+        <table
+                style="border-color: rebeccapurple; table-layout: fixed; text-align: center"
+                class="table table-bordered"
+                id="schedule-table"
+        >
+            <thead>
+            <tr>
+                <th scope="col">Time Slots</th>
+                <th scope="col">Sunday</th>
+                <th scope="col">Monday</th>
+                <th scope="col">Tuesday</th>
+                <th scope="col">Wednesday</th>
+                <th scope="col">Thursday</th>
+                <th scope="col">Friday</th>
+                <th scope="col">Saturday</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">00:00 - 04:00</th>
+                <td id="sun-0"></td>
+                <td id="mon-0"></td>
+                <td id="tue-0"></td>
+                <td id="wen-0"></td>
+                <td id="thu-0"></td>
+                <td id="fri-0"></td>
+                <td id="sat-0"></td>
+            </tr>
+            <tr>
+                <th scope="row">04:00 - 08:00</th>
+                <td id="sun-4"></td>
+                <td id="mon-4"></td>
+                <td id="tue-4"></td>
+                <td id="wen-4"></td>
+                <td id="thu-4"></td>
+                <td id="fri-4"></td>
+                <td id="sat-4"></td>
+            </tr>
+            <tr>
+                <th scope="row">08:00 - 12:00</th>
+                <td id="sun-8"></td>
+                <td id="mon-8"></td>
+                <td id="tue-8"></td>
+                <td id="wen-8"></td>
+                <td id="thu-8"></td>
+                <td id="fri-8"></td>
+                <td id="sat-8"></td>
+            </tr>
+            <tr>
+                <th scope="row">12:00 - 16:00</th>
+                <td id="sun-12"></td>
+                <td id="mon-12"></td>
+                <td id="tue-12"></td>
+                <td id="wen-12"></td>
+                <td id="thu-12"></td>
+                <td id="fri-12"></td>
+                <td id="sat-12"></td>
+            </tr>
+            <tr>
+                <th scope="row">16:00 - 20:00</th>
+                <td id="sun-16"></td>
+                <td id="mon-16"></td>
+                <td id="tue-16"></td>
+                <td id="wen-16"></td>
+                <td id="thu-16"></td>
+                <td id="fri-16"></td>
+                <td id="sat-16"></td>
+            </tr>
+            <tr>
+                <th scope="row">20:00 - 24:00</th>
+                <td id="sun-20"></td>
+                <td id="mon-20"></td>
+                <td id="tue-20"></td>
+                <td id="wen-20"></td>
+                <td id="thu-20"></td>
+                <td id="fri-20"></td>
+                <td id="sat-20"></td>
+            </tr>
+            </tbody>
+        </table>
+        <form>
+            <div class="row g-2">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" id="select-week-day" aria-label="Floating label select example">
+                            <option value="0">Sunday</option>
+                            <option value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                            <option selected disabled style="display: none">Select the Day of the Week</option>
+                        </select>
+                        <label for="select-week-day">Day of the Week</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" id="select-time-slot" aria-label="Floating label select example">
+                            <option value="0">00:00 - 04:00</option>
+                            <option value="4">04:00 - 08:00</option>
+                            <option value="8">08:00 - 12:00</option>
+                            <option value="12">12:00 - 16:00</option>
+                            <option value="16">16:00 - 20:00</option>
+                            <option value="20">20:00 - 24:00</option>
+                            <option selected disabled style="display: none">Select the Time Slots</option>
+                        </select>
+                        <label for="select-time-slot">Time Slots</label>
+                    </div>
+                </div>
+            </div>
+            <div style="padding-top: 20px" class="btn-group" role="group" aria-label="Basic mixed styles example">
+                <button type="submit" class="btn btn-primary" disabled id="btn-confirm-schedule">Confirm</button>
+                <button type="submit" class="btn btn-primary" disabled id="btn-cancel-schedule">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="appointment">
+        <p class="h1">History Appointment:</p>
+        <table
+                style="border-color: rebeccapurple; table-layout: fixed; text-align: center"
+                class="table table-bordered"
+                id="history-appointment-table-head"
+        >
+            <thead>
+            <tr>
+                <th scope="col">Provider</th>
+                <th scope="col">Patient</th>
+                <th scope="col">Start_Time</th>
+                <th scope="col">End_Time</th>
+                <th scope="col">Action</th>
+                <th scope="col">Log_Time</th>
+            </tr>
+            </thead>
+        </table>
+        <div id="no-appointment-history-message" style="text-align: center; padding-top: 100px"><p class="h2"> You do
+            not have any appointment history...</p></div>
+        <div style="overflow-y: auto; height: 400px">
+            <table
+                    style="border-color: rebeccapurple; table-layout: fixed; text-align: center"
+                    class="table table-bordered"
+                    id="history-appointment-table"
+            >
+                <tbody id="table-body-history-appointment">
+                <!--                <tr>-->
+                <!--                    <th scope="row">00:00 - 04:00</th>-->
+                <!--                    <td id="sun-0"></td>-->
+                <!--                    <td id="mon-0"></td>-->
+                <!--                    <td id="tue-0"></td>-->
+                <!--                    <td id="wen-0"></td>-->
+                <!--                    <td id="thu-0"></td>-->
+                <!--                </tr>-->
+                </tbody>
+            </table>
+        </div>
+        <p class="h1">Your Appointment:</p>
+        <!--        appointment information they may have or already accepted + distance (decline an offer or cancel the appointment)-->
+        <table
+                style="border-color: rebeccapurple; table-layout: fixed; text-align: center"
+                class="table"
+                id="current-appointment-table-head"
+        >
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Patient</th>
+                <th scope="col">Provider</th>
+                <th scope="col">Distance (mile)</th>
+                <th scope="col">Start_Time</th>
+                <th scope="col">End_Time</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+        </table>
+        <div style="overflow-y: auto; height: 400px">
+            <table
+                    style="table-layout: fixed; text-align: center"
+                    class="table table-striped"
+                    id="current-appointment-table"
+            >
+                <tbody id="table-body-current-appointment">
+                <!--                <tr>-->
+                <!--                    <th scope="row">00:00 - 04:00</th>-->
+                <!--                    <td id="sun-0"></td>-->
+                <!--                    <td id="mon-0"></td>-->
+                <!--                    <td id="tue-0"></td>-->
+                <!--                    <td id="wen-0"></td>-->
+                <!--                    <td id="thu-0"></td>-->
+                <!--                </tr>-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>patient log in</title>
+    <link href="https://fonts.googleapis.com/css2?family=Muli:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/patient-login.css">
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="../js/patient-login.js"></script>
+    <style>
+        .source {
+            text-align: center;
+            color: #ffffff;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="source"><h1>COVID19 Vaccination Sign-up System </h1></div>
+    <div class="form-container">
+        <div class="form-body">
+            <h2 class="title">Log in as Patient</h2>
+
+            <form id="login_form" class="the-form" method="post" action="/api/patients/login">
+
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="Enter your email">
+
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Enter your password">
+
+                <input type="submit" value="Log In">
+
+            </form>
+
+        </div><!-- FORM BODY-->
+
+        <div class="form-footer">
+            <div>
+                <span>Don't have an account?</span> <a id="sign-up" href="http://localhost:8080/view/patient_signup.html">Sign Up</a>
+            </div>
+        </div><!-- FORM FOOTER -->
+
+    </div><!-- FORM CONTAINER -->
+</div>
+</div>
+
+</body>
+</html>
